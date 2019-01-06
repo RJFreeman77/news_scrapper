@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Jumbotron from './components/Jumbotron';
-import Row from './components/Row';
-import Col from './components/Col';
-import MediaObject from './components/MediaObject';
+import Body from './components/pages/Body';
 
 class App extends Component {
   render() {

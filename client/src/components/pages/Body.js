@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import API from "../../utils/API";
-import Row from './components/Row';
-import Col from './components/Col';
-import MediaObject from './components/MediaObject';
+import Row from '../Row';
+import Col from '../Col';
+import MediaObject from '../MediaObject';
 
 class Body extends Component {
 
@@ -50,4 +50,5 @@ class Body extends Component {
     }
 
 }
+
 export default Body;

@@ -3,9 +3,8 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const newsContr = require("../../controllers/newsController");
 
-const tempArticleArr = [];
-
-router.get("/scrape", (req, res) => {
+router.get("/", (req, res) => {
+    console.log("getting to scrape route");
     axios.get("https://www.reuters.com/news/world")
         .then(response => {
             const $ = cheerio.load(response.data);

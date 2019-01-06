@@ -6,7 +6,7 @@ function MediaObject(props) {
         <div class="media">
             <div class="media-body">
                 <h5 class="mt-0">
-                    <a href={url} target="_blank">
+                    <a href={url}>
                         {title}
                     </a>
                 </h5>
