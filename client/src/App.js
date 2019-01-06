@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
 import Jumbotron from './components/Jumbotron';
+import Row from './components/Row';
+import Col from './components/Col';
+import MediaObject from './components/MediaObject';
 
 class App extends Component {
   render() {
@@ -9,6 +11,7 @@ class App extends Component {
         <Jumbotron>
           <h1>Rueters News Scraper!</h1>
         </Jumbotron>
+        <Body />
       </div>
     );
   }

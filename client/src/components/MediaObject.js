@@ -1,8 +1,22 @@
 import React from "react";
 
-function MediaObject({ title, url, summary, category }) {
+function MediaObject(props) {
+    const { title, url, summary, category } = props.children;
     return (
-        <div>
+        <div class="media">
+            <div class="media-body">
+                <h5 class="mt-0">
+                    <a href={url} target="_blank">
+                        {title}
+                    </a>
+                </h5>
+                <p className="font-weight-light">
+                    {category}
+                </p>
+                <p>
+                    {summary}
+                </p>
+            </div>
         </div>
     );
 }
