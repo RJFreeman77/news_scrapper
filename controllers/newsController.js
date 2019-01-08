@@ -21,7 +21,10 @@ const controls = {
                 const resultArr = [];
                 if (count === 0) {
                     News.create(result)
-                        .then(res => resultArr.push(res))
+                        .then(res => {
+                            resultArr.push(res);
+                            
+                        })
                         .catch(err => console.log("error: ", err));
                 } else {
                     console.log("this article already exists");
