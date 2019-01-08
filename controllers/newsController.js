@@ -1,24 +1,32 @@
-const db = require("../models");
+const News = require("../models/index");
 
-module.exports = {
+const controls = {
     create: (req, res) => {
-        db.News
+        News
             .create(req.body)
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
     },
     findAll: (req, res) => {
-        db.News
+        News
             .find(req.query)
             .sort({ date: -1 })
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
     },
-    ensureUnique: title => {
-        db.News
-            .countDocuments({ title }, (err, count) => {
-                const exists = (count === 0) ? true : false;
-                return exists;
+    ensureUnique: result => {
+        News
+            .countDocuments({ title: result.title }, function (err, count) {
+                if (count === 0) {
+                    News.create(result)
+                        .then(res => console.log("response: ", res))
+                        .catch(err => console.log("error: ", err));
+                } else {
+                    console.log("this article already exists");
+                }
+
             });
     }
 };
+
+module.exports = controls;

@@ -17,7 +17,10 @@ if (process.env.NODE_ENV === "production") {
 app.use(routes);
 
 // connect to mongo database
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.connect(MONGODB_URI);
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScrape";
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+
+const dbConnection = mongoose.connection;
+dbConnection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.listen(PORT, () => console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`));

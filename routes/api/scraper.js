@@ -4,26 +4,25 @@ const cheerio = require("cheerio");
 const newsContr = require("../../controllers/newsController");
 
 router.get("/", (req, res) => {
-    console.log("getting to scrape route");
-    axios.get("https://www.reuters.com/news/world")
+    console.log("inside scraper.js");
+    const url = "https://www.npr.org/sections/news/"
+    axios.get(url)
         .then(response => {
             const $ = cheerio.load(response.data);
             const result = {};
 
-            const articleContainer$ = $(".FeedItem_item");
-            articleContainer$.each(el => {
+            const articleContainer$ = $(".item.has-image");
+            articleContainer$.each((index, el) => {
                 const el$ = $(el);
 
-                result.title = el$.find(".FeedItemHeadline_headline").text();
-                result.summary = el$.find(".FeedItemLede_lede").text();
-                result.url = el$.find(".FeedItemHeadline_headline").find("a").attr("href");
-                result.category = el$.find(".FeedItemMeta_channel").text();
+                result.title = el$.find("h2.title").text();
+                result.img = el$.find(".imagewrap").find("img").attr("src");
+                result.url = el$.find(".imagewrap").find("a").attr("href");
+                result.summary = el$.find("p.teaser").text();
 
-                if (newsContr.ensureUnique(result.title)) {
-                    newsContr.create(result);
-                } else {
-                    console.log("this article already exists");
-                }
+                console.log(index + " scrape result:", result.title);
+
+                newsContr.ensureUnique(result);
             });
         });
 });
