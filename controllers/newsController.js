@@ -1,4 +1,5 @@
 const News = require("../models/index");
+const Promise = require("bluebird");
 
 const controls = {
     create: (req, res) => {
@@ -17,14 +18,15 @@ const controls = {
     ensureUnique: result => {
         News
             .countDocuments({ title: result.title }, function (err, count) {
+                const resultArr = [];
                 if (count === 0) {
                     News.create(result)
-                        .then(res => console.log("response: ", res))
+                        .then(res => resultArr.push(res))
                         .catch(err => console.log("error: ", err));
                 } else {
                     console.log("this article already exists");
                 }
-
+                // Promise.all(resultArr).then();
             });
     }
 };

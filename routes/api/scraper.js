@@ -9,18 +9,16 @@ router.get("/", (req, res) => {
     axios.get(url)
         .then(response => {
             const $ = cheerio.load(response.data);
-            const result = {};
-
+            
             const articleContainer$ = $(".item.has-image");
             articleContainer$.each((index, el) => {
+                const result = {};
                 const el$ = $(el);
 
                 result.title = el$.find("h2.title").text();
                 result.img = el$.find(".imagewrap").find("img").attr("src");
                 result.url = el$.find(".imagewrap").find("a").attr("href");
                 result.summary = el$.find("p.teaser").text();
-
-                console.log(index + " scrape result:", result.title);
 
                 newsContr.ensureUnique(result);
             });
