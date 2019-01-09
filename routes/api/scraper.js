@@ -8,15 +8,12 @@ router.get("/", (req, res) => {
     const url = "https://www.npr.org/sections/news/"
     console.log(url);
     const dbTasks = scrapeNews(url).then(articles => {
-        console.log("before handeling scrape promise");
+        console.log("articles: ", articles);
         articles.map(article => newsContr.ensureUnique(article))
-    }
-    );
+    });
 
     const runTasks = Promise.all(dbTasks);
-
     runTasks.then(concreteArticles => res.send(concreteArticles));
-
 });
 
 function scrapeNews(url) {
@@ -25,9 +22,6 @@ function scrapeNews(url) {
         .then(response => {
             mapArticles(response)
         });
-    // const scrapePromise = Promise.all(scrapeTask);
-    // return scrapePromise;
-
     return scrapeTask;
 }
 
@@ -43,9 +37,8 @@ function mapArticles(response) {
                 summary: $(this).find("p.teaser").text()
             };
         });
-    console.log("mapped: ", mapped.toArray());
+    // console.log("mapped: ", mapped.toArray());
     return mapped.toArray();
 }
-
 
 module.exports = router;
