@@ -5,28 +5,34 @@ const newsContr = require("../../controllers/newsController");
 const Promise = require("bluebird");
 
 router.get("/", (req, res) => {
-    const url = "https://www.npr.org/sections/news/"
-    console.log(url);
+    const url = "https://www.npr.org/sections/news/";
     const dbTasks = scrapeNews(url).then(articles => {
-        console.log("articles: ", articles);
-        articles.map(article => newsContr.ensureUnique(article))
+        // console.log("articles: ", articles);
+
+        newsContr.upsertArticle(articles, (err, result) => {
+            if (err) console.log(err);
+            res.json(result);
+        });
+
+
+        // articles.map(art => newsContr.upsertArticle(art));
+        // res.json(articles);
+        // articles.map(article => newsContr.ensureUnique(article))
     });
 
-    const runTasks = Promise.all(dbTasks);
-    runTasks.then(concreteArticles => res.send(concreteArticles));
+    // const runTasks = Promise.all(dbTasks);
+    // dbTasks.then(concreteArticles => res.json(concreteArticles));
 });
 
 function scrapeNews(url) {
-    console.log("scrapeNews()");
     const scrapeTask = axios.get(url)
         .then(response => {
-            mapArticles(response)
+            return mapArticles(response);
         });
     return scrapeTask;
 }
 
 function mapArticles(response) {
-    console.log("mapArticles");
     const $ = cheerio.load(response.data);
     const mapped = $(".item.has-image")
         .map(function () {
