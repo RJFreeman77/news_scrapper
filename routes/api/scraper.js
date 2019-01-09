@@ -2,27 +2,50 @@ const router = require("express").Router();
 const axios = require("axios");
 const cheerio = require("cheerio");
 const newsContr = require("../../controllers/newsController");
+const Promise = require("bluebird");
 
 router.get("/", (req, res) => {
-    console.log("inside scraper.js");
     const url = "https://www.npr.org/sections/news/"
-    axios.get(url)
-        .then(response => {
-            const $ = cheerio.load(response.data);
-            
-            const articleContainer$ = $(".item.has-image");
-            articleContainer$.each((index, el) => {
-                const result = {};
-                const el$ = $(el);
+    console.log(url);
+    const dbTasks = scrapeNews(url).then(articles => {
+        console.log("before handeling scrape promise");
+        articles.map(article => newsContr.ensureUnique(article))
+    }
+    );
 
-                result.title = el$.find("h2.title").text();
-                result.img = el$.find(".imagewrap").find("img").attr("src");
-                result.url = el$.find(".imagewrap").find("a").attr("href");
-                result.summary = el$.find("p.teaser").text();
+    const runTasks = Promise.all(dbTasks);
 
-                newsContr.ensureUnique(result);
-            });
-        });
+    runTasks.then(concreteArticles => res.send(concreteArticles));
+
 });
+
+function scrapeNews(url) {
+    console.log("scrapeNews()");
+    const scrapeTask = axios.get(url)
+        .then(response => {
+            mapArticles(response)
+        });
+    // const scrapePromise = Promise.all(scrapeTask);
+    // return scrapePromise;
+
+    return scrapeTask;
+}
+
+function mapArticles(response) {
+    console.log("mapArticles");
+    const $ = cheerio.load(response.data);
+    const mapped = $(".item.has-image")
+        .map(function () {
+            return {
+                title: $(this).find("h2.title").text(),
+                img: $(this).find(".imagewrap").find("img").attr("src"),
+                url: $(this).find(".imagewrap").find("a").attr("href"),
+                summary: $(this).find("p.teaser").text()
+            };
+        });
+    console.log("mapped: ", mapped.toArray());
+    return mapped.toArray();
+}
+
 
 module.exports = router;
