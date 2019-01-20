@@ -4,7 +4,7 @@ export default function Col({ size, children }) {
     return (
         <div
             className={size
-                .split(" ")
+                // .split(" ")
                 .map(size => "col-" + size)
                 .join(" ")}
         >

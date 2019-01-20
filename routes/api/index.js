@@ -1,7 +1,14 @@
 const router = require("express").Router();
-const scraper = require("./scraper");
+const newsContr = require("../../controllers/newsController");
 
-// Book routes
-router.use("/scraper", scraper);
+router.get("/scraper/", (req, res) => {
+    newsContr.addNewArticles()
+        // .then(data => {
+        //     console.log(data)
+        //     res.json(data)
+        // });
+
+
+});
 
 module.exports = router;

@@ -35,7 +35,7 @@ class Body extends Component {
                                     <Col>
                                         <MediaObject key={article._id}>
                                             {article}
-                                        </MediaObject>                                        />
+                                        </MediaObject>
                                     </Col>
                                 </Row>
                             );

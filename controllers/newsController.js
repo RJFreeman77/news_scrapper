@@ -1,5 +1,8 @@
 const News = require("../models/index");
-const Promise = require("bluebird");
+const ArticleScraper = require('../services/cherrio');
+// const Promise = require("bluebird");
+
+const scraper = new ArticleScraper();
 
 const controls = {
     create: (req, res) => {
@@ -15,61 +18,49 @@ const controls = {
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
     },
-    ensureUnique: result => {
-        const myOperationResult = new Promise((resolve, reject) => {
-            News
-                .countDocuments({ title: result.title }, (err, count) => {
-                    if (count === 0) {
-                        News.create(result)
-                            .then(res => resolve(res))
-                        // .catch(err => console.log("error: ", err));
+    addNewArticles: () => {
+        // scrape articles and put results into array. 
+        // then go through array and save each one into the db
+        // then return them all as an array of json
 
-                    } else {
-                        console.log("this article already exists");
-                    }
-                });
-        });
-
-        return myOperationResult;
-    },
-    upsertArticle: async (articles, cb) => {
-        function runUpdate(obj) {
-            return new Promise((resolve, reject) => {
-                News.findOneAndUpdate(
-                    { url: obj.url },
-                    obj,
-                    { upsert: true })
-                    .then(result => resolve(result))
-                    .catch(err => reject(err))
+        const scrapeTask = scraper.scrapeArticles()
+            .then(res => {
+                res.map(e => {
+                    post(e);
+                })
             });
+
+        // ^doesn't work. saves to DB, but doesnt return anything. 
+
+        const post = (task) => {
+            return News.findOneAndUpdate(
+                { url: task.url },
+                task,
+                { upsert: true, returnNewDocument: true },
+                (err, doc) => {
+                    if (err) {
+                        console.error("findOneAndUpdate Error: ", err)
+                    }
+                    // articles.push(doc);
+                    return doc;
+                });
         }
 
-        let promiseArr = [];
-        articles.forEach(obj => promiseArr.push(runUpdate(obj)));
-
-        Promise.all(promiseArr).then(res => console.log(res));
-
-
-        let error = "";
-        const docs = [];
-        // cb(error, docs);
-
-        // articles.forEach((article) => {
-        // News.findOneAndUpdate(
-        //     { url: article.url },
-        //     article,
-        //     { upsert: true },
+        // const addIfUnique = News.findOneAndUpdate(
+        //     { url: scrapeTask.url },
+        //     scrapeTask,
+        //     { upsert: true, returnNewDocument: true },
         //     (err, doc) => {
-        //         if (err) { error = err };
+        //         if (err) {
+        //             console.error("findOneAndUpdate Error: ", err)
+        //         }
+        //         return doc;
+        //     });
 
-        //         docs.push(doc);
-        //         console.log(`Docs Length: ${docs.length}`)
-        //     }
-        // )
-        // });
-
-        // console.log(`Doc Count: #${docs.length}`)
-
+        const getExisting = News.find();
+        return scrapeTask;
+        // return Promise.all([scrapeTask, addIfUnique]);
+        // const promiseReturn = Promise.all([scrapeTask]).then(tasks => post(tasks));
     }
 
 };
