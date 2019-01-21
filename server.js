@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(routes);
 
 // connect to mongo database
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScrape123";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScrape";
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 const dbConnection = mongoose.connection;
