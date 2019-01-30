@@ -18,8 +18,10 @@ class Body extends Component {
 
     loadArticles = () => {
         API.getArticles()
-            .then(res =>
-                this.setState({ articles: res.data })
+            .then(res => {
+                console.log(res.data);
+                this.setState({ articles: res.data });
+            }
             )
             .catch(err => console.error(err));
     };

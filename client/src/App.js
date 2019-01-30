@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Jumbotron from './components/Jumbotron';
-import Body from './components/pages/Body';
+import AppBody from './components/pages/Body';
 
 class App extends Component {
   render() {
@@ -9,7 +9,7 @@ class App extends Component {
         <Jumbotron>
           <h1>Rueters News Scraper!</h1>
         </Jumbotron>
-        <Body />
+        <AppBody />
       </div>
     );
   }

@@ -1,0 +1,12 @@
+img {
+    max-width: 150px;
+    max-height: 150px;
+    margin: 20px;
+
+}
+
+.media  {
+    border: solid grey 1px;
+    margin: 15px 0;
+    padding-top: 10px;
+}

@@ -1,12 +1,13 @@
 import React from "react";
+import "./style.css";
 
 function MediaObject(props) {
-    const { title, url, summary, image } = props.children;
+    const { title, url, summary, img } = props.children;
     return (
-        <div class="media">
-            <img src={image} alt={`${title}`} />
-            <div class="media-body">
-                <h5 class="mt-0">
+        <div className="media">
+            <img src={img} alt={`${title}`} />
+            <div className="media-body">
+                <h5 className="mt-0">
                     <a href={url}>
                         {title}
                     </a>
